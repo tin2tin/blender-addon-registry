@@ -392,7 +392,7 @@ class ADDON_REGISTRY_PT_panel(Panel):
                 buttons = sub.split(factor=0.5)
                 
                 if is_installed:
-                    buttons.operator("wm.addon_remove",
+                    buttons.operator("preferences.addon_remove",
                         text=".".join(map(str, installed_version)),
                         icon='CANCEL').module = name
                 else:
@@ -407,9 +407,9 @@ class ADDON_REGISTRY_PT_panel(Panel):
                 
                 if is_installed:
                     if is_enabled:
-                        row.operator("wm.addon_disable", icon='CHECKBOX_HLT', text="", emboss=False).module = name
+                        row.operator("preferences.addon_disable", icon='CHECKBOX_HLT', text="", emboss=False).module = name
                     else:
-                        row.operator("wm.addon_enable", icon='CHECKBOX_DEHLT', text="", emboss=False).module = name
+                        row.operator("preferences.addon_enable", icon='CHECKBOX_DEHLT', text="", emboss=False).module = name
                 else:
                     sub = row.row()
                     sub.active = False
