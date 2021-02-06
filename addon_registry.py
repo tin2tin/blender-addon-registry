@@ -24,7 +24,7 @@ bl_info = {
     "name": "Addon Registry",
     "author": "Jonathan Giroux (Bloutiouf)",
     "version": (0, 1, 2),
-    "blender": (2, 70, 0),
+    "blender": (2, 80, 0),
     "location": "User Preferences > Addons",
     "description": "Manage addons the easy way!",
     "warning": "",
@@ -262,7 +262,7 @@ class AddonRegistryPanel(Panel):
     
     @classmethod
     def poll(cls, context):
-        return (context.user_preferences.active_section == 'ADDONS')
+        return (context.preferences.active_section == 'ADDONS')
     
     def draw(self, context):
         layout = self.layout
@@ -309,7 +309,7 @@ class AddonRegistryPanel(Panel):
         
         addon_dir = get_addon_dir()
         
-        userpref = context.user_preferences
+        userpref = context.preferences
         wm = context.window_manager
         
         installed_addons = {}
@@ -615,9 +615,20 @@ class UpdateAll(Operator):
         
         return {"FINISHED"}
 
+classes = (
+    AddonRegistryPanel,
+    Expand,
+    Install,
+    HideError,
+    ResetConfiguration,
+    SaveArchive,
+    UpdateDatabase,
+    UpdateAll,
+    )
+
 
 def update_from_registry(self, context):
-    if context.user_preferences.active_section == "ADDONS":
+    if context.preferences.active_section == "ADDONS":
         self.layout.operator(UpdateAll.bl_idname, icon='FILE_REFRESH')
 
 def register():
@@ -640,7 +651,8 @@ def register():
         items.extend([(cat, cat, "") for cat in sorted(items_unique)])
         return items
 
-    bpy.utils.register_module(__name__)
+    for cls in classes:
+        register_class(cls)
     USERPREF_HT_header.append(update_from_registry)
     
     WindowManager.addon_registry_search = StringProperty(
@@ -659,7 +671,8 @@ def register():
 
 def unregister():
     USERPREF_HT_header.remove(update_from_registry)
-    bpy.utils.unregister_module(__name__)
+    for cls in classes:
+        unregister_class(cls)
     del WindowManager.addon_registry_search
     del WindowManager.addon_registry_filter
 
