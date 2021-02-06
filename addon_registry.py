@@ -254,10 +254,10 @@ def update_addon_database():
     save_configuration()
     return success
 
-class AddonRegistryPanel(Panel):
+class ADDON_REGISTRY_PT_panel(Panel):
     """Addon registry panel, below the regular addon panel"""
     bl_label = "Addon registry"
-    bl_space_type = "USER_PREFERENCES"
+    bl_space_type = "PREFERENCES"
     bl_region_type = "WINDOW"
     
     @classmethod
@@ -273,37 +273,37 @@ class AddonRegistryPanel(Panel):
             box.label(icon='ERROR', text=error_titles[lastError])
             
             if lastError == ERROR_EXTRACT_MANUALLY:
-                box.label("The downloaded file is not recognized. It should be an archive that you need to extract manually.")
-                split = box.split(0.6)
-                split.label("By installing 7-Zip and adding it to your PATH, the registry recognizes more formats.")
+                box.label(text="The downloaded file is not recognized. It should be an archive that you need to extract manually.")
+                split = box.split(factor=0.6)
+                split.label(text="By installing 7-Zip and adding it to your PATH, the registry recognizes more formats.")
                 row = split.row()
                 row.operator("wm.url_open", icon='URL', text="Download 7-Zip").url = "http://www.7-zip.org/download.html"
                 row.operator("wm.url_open", icon='URL', text="Installation instructions").url = "http://www.7-zip.org/download.html"
             
             elif lastError == ERROR_FAILED_COPY:
-                box.label("The addon file is unreachable.")
+                box.label(text="The addon file is unreachable.")
             
             elif lastError == ERROR_FAILED_DOWNLOAD:
-                box.label("Something may be wrong with your Internet connection. Please try again later.")
+                box.label(text="Something may be wrong with your Internet connection. Please try again later.")
             
             elif lastError == ERROR_FAILED_REQUEST:
-                box.label("The server hosting the addon may be down. Please try again later.")
-                box.label("The addon may have moved to another URL. If you think this is the case, please report it using the following button, so that the maintainer will update the registry.")
+                box.label(text="The server hosting the addon may be down. Please try again later.")
+                box.label(text="The addon may have moved to another URL. If you think this is the case, please report it using the following button, so that the maintainer will update the registry.")
             
             elif lastError == ERROR_FAILED_RETRIEVE_ADDON_LIST:
-                box.label("The registry server may be down. Please try again later.")
-                box.label("The registry may have moved to another URL. If you think this is the case, please report it using the following button, so that the maintainer will update the registry.")
+                box.label(text="The registry server may be down. Please try again later.")
+                box.label(text="The registry may have moved to another URL. If you think this is the case, please report it using the following button, so that the maintainer will update the registry.")
             
             elif lastError == ERROR_HASH_MISMATCH:
-                box.label("The downloaded addon does not match the registry record. For security reasons, it won't be installed.")
-                box.label("It could mean that the addon's author has uploaded a new version with the same URL.")
-                box.label("If you think this is the case, please report it using the following button, so that the maintainer will update the registry.")
+                box.label(text="The downloaded addon does not match the registry record. For security reasons, it won't be installed.")
+                box.label(text="It could mean that the addon's author has uploaded a new version with the same URL.")
+                box.label(text="If you think this is the case, please report it using the following button, so that the maintainer will update the registry.")
             
             elif lastError == ERROR_NO_HASH:
-                box.label("The registry record does not contain an expected hash, therefore the addon authenticity can't be verified.")
-                box.label("You may be using an unofficial registry. If this is the case, please report it to its maintainers.")
+                box.label(text="The registry record does not contain an expected hash, therefore the addon authenticity can't be verified.")
+                box.label(text="You may be using an unofficial registry. If this is the case, please report it to its maintainers.")
             
-            split = box.split(0.9)
+            split = box.split(factor=0.9)
             split.operator("wm.url_open", icon='URL', text="If the error persists, please report an issue to the registry maintainers").url = "https://github.com/Bloutiouf/XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/issues/new"
             split.operator("addon_registry.hide_error", icon='X')
         
@@ -318,7 +318,7 @@ class AddonRegistryPanel(Panel):
         
         enabled_addon_names = {addon.module for addon in userpref.addons}
         
-        split = layout.split(percentage=0.2)
+        split = layout.split(factor=0.2)
         
         col = split.column()
         
@@ -380,7 +380,7 @@ class AddonRegistryPanel(Panel):
                 
                 row.operator(Expand.bl_idname, icon='TRIA_DOWN' if show_expanded else "TRIA_RIGHT", emboss=False).addon_name = name
                 
-                sub = row.split(0.6)
+                sub = row.split(factor=0.6)
                 
                 text = sub.row()
                 text.label(text="%s: %s" % (info["category"], info["name"]))
@@ -389,17 +389,17 @@ class AddonRegistryPanel(Panel):
                 if warning:
                     text.label(icon='ERROR')
                     
-                buttons = sub.split(0.5)
+                buttons = sub.split(factor=0.5)
                 
                 if is_installed:
                     buttons.operator("wm.addon_remove",
                         text=".".join(map(str, installed_version)),
                         icon='CANCEL').module = name
                 else:
-                    buttons.label("Not installed")
+                    buttons.label(text="Not installed")
                     
                 if is_installed and not is_newer_available:
-                    buttons.label("Latest version")
+                    buttons.label(text="Latest version")
                 else:
                     buttons.operator(Install.bl_idname,
                         text=".".join(map(str, available_version)),
@@ -419,28 +419,28 @@ class AddonRegistryPanel(Panel):
                     if peers:
                         colsub.row().label(icon='LINK_AREA', text="Bundled with: " + ", ".join(configuration["addons"][peer]["info"]["name"] for peer in peers))
                     if info["description"]:
-                        split = colsub.row().split(percentage=0.15)
+                        split = colsub.row().split(factor=0.15)
                         split.label(text="Description:")
                         split.label(text=info["description"])
                     if info["location"]:
-                        split = colsub.row().split(percentage=0.15)
+                        split = colsub.row().split(factor=0.15)
                         split.label(text="Location:")
                         split.label(text=info["location"])
                     if info["author"]:
-                        split = colsub.row().split(percentage=0.15)
+                        split = colsub.row().split(factor=0.15)
                         split.label(text="Author:")
                         split.label(text=info["author"], translate=False)
                     if info["version"]:
-                        split = colsub.row().split(percentage=0.15)
+                        split = colsub.row().split(factor=0.15)
                         split.label(text="Version:")
                         split.label(text=".".join(str(x) for x in info["version"]), translate=False)
                     if warning:
-                        split = colsub.row().split(percentage=0.15)
+                        split = colsub.row().split(factor=0.15)
                         split.label(text="Warning:")
                         split.label(text="  " + warning, icon='ERROR')
                     
                     separators = 2
-                    split = colsub.row().split(percentage=0.15)
+                    split = colsub.row().split(factor=0.15)
                     split.label(text="Internet:")
                     if info["wiki_url"]:
                         split.operator("wm.url_open", text="Documentation", icon='HELP').url = info["wiki_url"]
@@ -616,7 +616,7 @@ class UpdateAll(Operator):
         return {"FINISHED"}
 
 classes = (
-    AddonRegistryPanel,
+    ADDON_REGISTRY_PT_panel,
     Expand,
     Install,
     HideError,
@@ -652,7 +652,7 @@ def register():
         return items
 
     for cls in classes:
-        register_class(cls)
+        bpy.utils.register_class(cls)
     USERPREF_HT_header.append(update_from_registry)
     
     WindowManager.addon_registry_search = StringProperty(
@@ -672,7 +672,7 @@ def register():
 def unregister():
     USERPREF_HT_header.remove(update_from_registry)
     for cls in classes:
-        unregister_class(cls)
+        bpy.utils.unregister_class(cls)
     del WindowManager.addon_registry_search
     del WindowManager.addon_registry_filter
 
