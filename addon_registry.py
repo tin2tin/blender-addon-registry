@@ -461,7 +461,7 @@ class Expand(Operator):
     bl_idname = "addon_registry.addon_expand"
     bl_label = ""
     
-    addon_name = StringProperty(
+    addon_name: StringProperty(
         name="Addon name"
         )
     
@@ -481,7 +481,7 @@ class Install(Operator):
     bl_idname = "addon_registry.install"
     bl_label = "Version"
     
-    addon_name = StringProperty(
+    addon_name: StringProperty(
         name="Addon name"
         )
     
@@ -538,12 +538,12 @@ class SaveArchive(Operator):
     bl_idname = "addon_registry.save_archive"
     bl_label = "Save archive"
 
-    download_path = StringProperty(
+    download_path: StringProperty(
             name="Download path",
             options={"HIDDEN"}
             )
 
-    filepath = StringProperty(
+    filepath: StringProperty(
             subtype="FILE_PATH"
             )
 
@@ -655,12 +655,12 @@ def register():
         bpy.utils.register_class(cls)
     USERPREF_HT_header.append(update_from_registry)
     
-    WindowManager.addon_registry_search = StringProperty(
+    WindowManager.addon_registry_search: StringProperty(
             name="Search",
             description="Search within the selected filter",
             )
     
-    WindowManager.addon_registry_filter = EnumProperty(
+    WindowManager.addon_registry_filter: EnumProperty(
         name="Category",
         description="Filter addons by category",
         items=addon_filter_items
