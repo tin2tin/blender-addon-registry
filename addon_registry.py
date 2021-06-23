@@ -68,7 +68,7 @@ import subprocess
 import tempfile
 import zipfile
 from bpy.props import *
-from bpy.types import Panel, Operator, USERPREF_HT_header, WindowManager
+from bpy.types import Panel, Operator, Scene
 from string import Template
 from urllib.parse import urlparse
 
@@ -310,7 +310,7 @@ class ADDON_REGISTRY_PT_panel(Panel):
         addon_dir = get_addon_dir()
         
         userpref = context.preferences
-        wm = context.window_manager
+        wm = bpy.context.window_manager
         
         installed_addons = {}
         for mod in addon_utils.modules(refresh=False):
@@ -530,7 +530,7 @@ class ResetConfiguration(Operator):
         self.layout.label(text="Are you sure?")
     
     def invoke(self, context, event):
-        return context.window_manager.invoke_props_dialog(self)
+        return bpy.context.window_manager.invoke_props_dialog(self)
 
 
 class SaveArchive(Operator):
@@ -552,10 +552,10 @@ class SaveArchive(Operator):
         return {"FINISHED"}
 
     def invoke(self, context, event):
-        wm = context.window_manager
+        wm = bpy.context.window_manager
         wm.fileselect_add(self)
         return {"RUNNING_MODAL"}
-        return context.window_manager.invoke_props_dialog(self, width=600)
+        return bpy.context.window_manager.invoke_props_dialog(self, width=600)
 
 
 class UpdateDatabase(Operator):
@@ -653,14 +653,14 @@ def register():
 
     for cls in classes:
         bpy.utils.register_class(cls)
-    USERPREF_HT_header.append(update_from_registry)
+    bpy.types.USERPREF_HT_header.append(update_from_registry)
     
-    WindowManager.addon_registry_search: StringProperty(
+    bpy.types.WindowManager.addon_registry_search = StringProperty(
             name="Search",
             description="Search within the selected filter",
             )
     
-    WindowManager.addon_registry_filter: EnumProperty(
+    bpy.types.WindowManager.addon_registry_filter = EnumProperty(
         name="Category",
         description="Filter addons by category",
         items=addon_filter_items
@@ -670,11 +670,12 @@ def register():
     update_addon_database()
 
 def unregister():
-    USERPREF_HT_header.remove(update_from_registry)
+    bpy.types.USERPREF_HT_header.remove(update_from_registry)
     for cls in classes:
         bpy.utils.unregister_class(cls)
-    del WindowManager.addon_registry_search
-    del WindowManager.addon_registry_filter
+        
+    # del bpy.types.WindowManager.addon_registry_search
+    # del bpy.types.WindowManager.addon_registry_filter
 
 if __name__ == "__main__":
-    register()
+    unregister()
